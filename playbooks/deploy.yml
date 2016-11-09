@@ -1,0 +1,7 @@
+- include: quickstart.yml
+
+- name:  Deploy Tripleo
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: tripleo-ci }

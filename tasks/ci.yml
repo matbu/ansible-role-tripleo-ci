@@ -1,0 +1,13 @@
+---
+- name: remove tripleo-ci if exist
+  file: path=/home/stack/tripleo-ci state=absent
+
+- name: clone tripleo ci repo on the undercloud vms
+  shell: >
+    git clone https://github.com/openstack-infra/tripleo-ci.git
+
+- name: create ci script
+  template:
+    src: "{{ ci_script }}"
+    dest: "/home/stack/ci.sh"
+    mode: 0755
