@@ -1,31 +1,52 @@
-Role Name
-=========
+Ansible Tripleo-CI
+==================
 
-A brief description of the role goes here.
+This role give you the opportunity to run the tripleo-ci script as close as
+possible to the CI run.
+It's allow you to reproduce CI failures and being able to debug the CI
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+One boxe with ssh access as root throught ssh-keys.
+32gb / 8 cpu
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+the main variable is: job_name, which correspond to the name of the tripleo-ci
+that aim to run.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+It use tripleo-quickstart for setting up your server then it just clone
+tripleo-ci repo and call scripts
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+- include: quickstart.yml
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- name:  Deploy Tripleo
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: tripleo-ci }
+
+How to execute
+--------------
+
+After making sure that you can ssh to your server, run just a:
+./deploy.sh <server_ip_or_name> <job_name>
+
+example:
+./deploy.sh mbubox gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv
+
+Todo
+----
+
+Handle the zuul variable for gate jobs
 
 License
 -------
@@ -35,4 +56,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+mat.bultel@gmail.com
