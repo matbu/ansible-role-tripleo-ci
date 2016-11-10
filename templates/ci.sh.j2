@@ -14,8 +14,8 @@ set -eux
 set -o pipefail
 # Job name
 #JOB_NAME=$1
-JOB_NAME=gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv
-TOCI_JOBTYPE=gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv
+JOB_NAME={{ job_name }}
+TOCI_JOBTYPE={{ job_name }}
 # Tripleo Root:
 TRIPLEO_ROOT=/home/stack
 # Export default CI variables:
@@ -130,7 +130,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${JOB_NAME:-}") ; do
             TRIPLEO_SH_ARGS="--use-containers"
             ;;
         ovb)
-            OVB=1
+            OVB=0
             ;;
         ipv6)
             NETISO_V4=0
@@ -177,12 +177,22 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${JOB_NAME:-}") ; do
     esac
 done
 
+sudo yum install -y epel-release
 sudo yum install -y moreutils
+
+if [ ! -f "/etc/ironic/ironic.conf.oooq" ]; then
+    sudo cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf.oooq;
+    # newton
+    sudo sed -i 's/#libvirt_uri = qemu:\/\/\/system/libvirt_uri = qemu:\/\/\/session/g' /etc/ironic/ironic.conf;
+    # liberty, mitaka
+    sudo sed -i 's/#libvirt_uri=qemu:\/\/\/system/libvirt_uri=qemu:\/\/\/session/g' /etc/ironic/ironic.conf;
+    sudo systemctl restart openstack-ironic-conductor.service;
+fi
+
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
-stop_metric "tripleo.testenv.wait.seconds" # start_metric in toci_gate_test.sh
 start_metric "tripleo.ci.total.seconds"
 
 mkdir -p $WORKSPACE/logs

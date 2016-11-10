@@ -1,3 +1,4 @@
 ---
 # defaults file for ansible-tripleo-ci-role
 ci_script: ci.sh.j2
+job_name: ci_job_name

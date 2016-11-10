@@ -6,6 +6,45 @@
 : ${RELEASE:=mitaka}
 
 VIRTHOST=$1
+# gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv
+JOB_NAME=$2
+export NODECOUNT=2
+for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${JOB_NAME:-}") ; do
+    case $JOB_TYPE_PART in
+        updates)
+            if [ $JOB_NAME == 'ovb-updates' ] ; then
+                NODECOUNT=3
+            fi
+            ;;
+        ha)
+            NODECOUNT=4
+            ;;
+        nonha)
+            if [[ ! "$JOB_NAME" =~ "upgrades" ]] ; then
+                NODECOUNT=3
+            fi
+            ;;
+        multinode)
+            NODECOUNT=1
+            ;;
+        undercloud)
+            NODECOUNT=0
+            ;;
+    esac
+done
+
+# echo overcloud nodes for oooq
+cat <<EOF >> tripleo_config.yaml
+overcloud_nodes:
+  - name: control_0
+    flavor: control
+  - name: control_1
+    flavor: control
+  - name: control_2
+    flavor: control
+  - name: compute_3
+    flavor: compute
+EOF
 
 clean_virtualenv() {
     if [ -d $OPT_WORKDIR ]; then
@@ -56,10 +95,12 @@ fi
 
 ansible-playbook -vvvv $OPT_WORKDIR/playbooks/deploy.yml \
     -e @$OPT_WORKDIR/config/release/$RELEASE.yml \
+    -e @tripleo_config.yaml \
     --tags "teardown-all,untagged,provision,environment,undercloud-scripts" \
     -e ansible_python_interpreter=/usr/bin/python \
     -e local_working_dir=$OPT_WORKDIR \
-    -e virthost=$VIRTHOST
+    -e virthost=$VIRTHOST \
+    -e job_name=$JOB_NAME
 
 
 #    --tags "provision,environment,undercloud-scripts" \
