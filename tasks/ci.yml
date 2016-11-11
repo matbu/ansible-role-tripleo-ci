@@ -21,10 +21,9 @@
 # TODO: remove the patch review with zuul parameters
 - name: grab upgrade review
   shell: >
+    curl "https://review.openstack.org/changes/323750/revisions/current/patch" |base64 --decode > /home/stack/"323750.patch";
     pushd tripleo-ci;
-    git remote add gerrit https://review.openstack.org/openstack/tripleo-ci;
-    git fetch --all;
-    git review -d I085a7134bbbf4086c1793d405b400e19eac6b003
+    patch -N -p1 -b -z .first < /home/stack/323750.patch;
 
 - name: create ci script
   template:
