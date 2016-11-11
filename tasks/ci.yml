@@ -7,6 +7,11 @@
   yum: name={{ item }} state=latest
   with_items:
     - epel-release
+
+- name: check or install required packages
+  become: true
+  yum: name={{ item }} state=latest
+  with_items:
     - git-review
 
 # TODO: remove the patch review with zuul parameters
