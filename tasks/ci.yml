@@ -14,10 +14,13 @@
   with_items:
     - git-review
 
-# TODO: remove the patch review with zuul parameters
 - name: clone tripleo ci repo on the undercloud vms
   shell: >
-    git clone https://github.com/openstack-infra/tripleo-ci.git;
+    git clone https://github.com/openstack-infra/tripleo-ci.git
+
+# TODO: remove the patch review with zuul parameters
+- name: grab upgrade review
+  shell: >
     pushd tripleo-ci;
     git remote add gerrit https://review.openstack.org/openstack/tripleo-ci;
     git fetch --all;
