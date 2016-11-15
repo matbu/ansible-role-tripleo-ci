@@ -40,8 +40,8 @@ How to execute
 After making sure that you can ssh to your server, run just a:
 ./deploy.sh <server_ip_or_name> <job_name>
 
-example:
-./deploy.sh mbubox gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv
+example, for the experimental job: gate-tripleo-ci-centos-7-ovb-nonha-upgrades-nv:
+./deploy.sh mbubox ovb-nonha-upgrades
 
 Todo
 ----
