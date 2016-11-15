@@ -20,6 +20,7 @@
 
 # TODO: remove the patch review with zuul parameters
 - name: grab upgrade review
+  when: upgrade_review|bool
   shell: >
     curl "https://review.openstack.org/changes/323750/revisions/current/patch" |base64 --decode > /home/stack/"323750.patch";
     pushd tripleo-ci;
