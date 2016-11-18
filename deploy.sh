@@ -96,6 +96,7 @@ fi
 ansible-playbook -vvvv $OPT_WORKDIR/playbooks/deploy.yml \
     -e @$OPT_WORKDIR/config/release/$RELEASE.yml \
     -e @tripleo_config.yaml \
+    -e upgrade_review=true \
     --tags "teardown-all,untagged,provision,environment,undercloud-scripts" \
     -e ansible_python_interpreter=/usr/bin/python \
     -e local_working_dir=$OPT_WORKDIR \

@@ -63,6 +63,7 @@ export MIRRORSERVER=
 export CENTOS_MIRROR=
 export http_proxy=
 export PINGTEST_TEMPLATE=
+export UPGRADE_VERSION=
 # Parse JOB_NAME and attribute variables:
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${JOB_NAME:-}") ; do
     case $JOB_TYPE_PART in
@@ -93,8 +94,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${JOB_NAME:-}") ; do
                     STABLE_RELEASE=newton
                 fi
             elif [ $JOB_NAME == 'ovb-nonha-upgrades' ] ; then
-                FULL_MAJOR_UPGRADE=1
-                OVERCLOUD_DEPLOY_ARGS=" -e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml $OVERCLOUD_DEPLOY_ARGS"
+                UNDERCLOUD_MAJOR_UPGRADE=1
+                OVERCLOUD_MAJOR_UPGRADE=1
+                OVERCLOUD_DEPLOY_ARGS=" -e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/neutronl3ha.yaml $OVERCLOUD_DEPLOY_ARGS"
                 PACEMAKER=1
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
